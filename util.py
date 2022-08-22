@@ -38,7 +38,7 @@ def massage_data(X_i,y_i, mz_i, rt_i):
 
     return dfi
 
-def get_data_mz_batch(data_mz ,features_list, t_in_min=False):
+def get_data_mz_batch(data_mz ,features_list):
 
     run = pymzml.run.Reader(data_mz,MS1_Precision=5e-3, MSn_Precision=5e-3,  MS_precisions = {
         1 : 5e-3,
@@ -59,9 +59,7 @@ def get_data_mz_batch(data_mz ,features_list, t_in_min=False):
         if scan.ms_level == 1:
 
             t, measure = scan.scan_time  # get scan time
-
-            if t_in_min:
-                t = t*60
+            t = t*60
 
             peaks = defaultdict(list)
             for pk in scan.peaks('raw'):
@@ -76,7 +74,6 @@ def get_data_mz_batch(data_mz ,features_list, t_in_min=False):
                 if t >= (fe[1]-half_time_window) and ticks_processed < number_ticks :
 
                     ticks_processed_list[fe[0]] += 1
-
 
 
                     scans = []
@@ -115,7 +112,7 @@ def get_data_mz_batch(data_mz ,features_list, t_in_min=False):
 
     return  [X_, y_, mz_, rt_ ]
 
-def get_data_mz(data_mz ,mz , retention_time, t_in_min=False):
+def get_data_mz(data_mz ,mz , retention_time):
 
     run = pymzml.run.Reader(data_mz)
 
@@ -123,18 +120,16 @@ def get_data_mz(data_mz ,mz , retention_time, t_in_min=False):
 
     ticks_processed = 0
 
+
+
     for i, scan in enumerate(run):
 
         if scan.ms_level == 1:
 
             t, measure = scan.scan_time  # get scan time
+            t = t * 60
 
-            if t_in_min:
-
-                t = t*60
-
-
-            if t >= (retention_time-half_time_window):
+            if t >= (retention_time-half_time_window): # everything should be in sec
 
                 ticks_processed +=1
 
