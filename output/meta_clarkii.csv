@@ -1,0 +1,62 @@
+Sample_ID,InjectionOrder,Type,Class
+Qcclarkii in6.25%,13,QC,QC6.25
+Qcclarkii in12.5%,14,QC,QC12.5
+Qcclarkii in25%,15,QC,QC25
+Qcclarkii in50%,16,QC,QC50
+Qcclarkii in100%,17,QC,QC100
+QCclarkii1,18,QC,QCclarkii
+A.clarkii T72hI7exp,19,Sample,T72hexp
+A.clarkii T0I3exp,20,Sample,T0exp
+A.clarkii T72hI1ctrl,21,Sample,T72hctrl
+A.clarkii T72hI10ctrl,22,Sample,T72hctrl
+A.clarkii T72hI7ctrl,23,Sample,T72hctrl
+A.clarkii T0I5ctrl,24,Sample,T0ctrl
+QCclarkii2,25,QC,QCclarkii
+A.clarkii T0I1ctrl,26,Sample,T0ctrl
+A.clarkii T72hI5exp,27,Sample,T72hexp
+A.clarkii T0I3ctrl,28,Sample,T0ctrl
+A.clarkii T72hI6exp,29,Sample,T72hexp
+A.clarkii T72hI11ctrl,30,Sample,T72hctrl
+A.clarkii T0I6ctrl,31,Sample,T0ctrl
+QCclarkii3,32,QC,QCclarkii
+A.clarkii T0I2exp,33,Sample,T0exp
+A.clarkii T72hI3exp,34,Sample,T72hexp
+A.clarkii T0I2ctrl,35,Sample,T0ctrl
+A.clarkii T0I8exp,36,Sample,T0exp
+A.clarkii T72hI5ctrl,37,Sample,T72hctrl
+A.clarkii T0I6exp,38,Sample,T0exp
+QCclarkii4,39,QC,QCclarkii
+A.clarkii T0I1exp,40,Sample,T0exp
+A.clarkii T0I8ctrl,41,Sample,T0ctrl
+A.clarkii T72hI10exp,42,Sample,T72hexp
+A.clarkii T0I11exp,43,Sample,T0exp
+A.clarkii T0I7ctrl,44,Sample,T0ctrl
+A.clarkii T72hI2ctrl,45,Sample,T72hctrl
+QCclarkii5,46,QC,QCclarkii
+A.clarkii T0I5exp,46,Sample,T0exp
+A.clarkii T0I4ctrl,48,Sample,T0ctrl
+A.clarkii T72hI8exp,49,Sample,T72hexp
+A.clarkii T72hI8ctrl,50,Sample,T72hctrl
+A.clarkii T0I4exp,51,Sample,T0exp
+A.clarkii T72hI3ctrl,52,Sample,T72hctrl
+QCclarkii6,53,QC,QCclarkii
+A.clarkii T72hI1exp,54,Sample,T72hexp
+A.clarkii T0I9exp,55,Sample,T0exp
+A.clarkii T72hI11exp,56,Sample,T72hexp
+A.clarkii T72hI4ctrl,57,Sample,T72hctrl
+A.clarkii T0I11ctrl,58,Sample,T0ctrl
+A.clarkii T0I7exp,59,Sample,T0exp
+QCclarkii7,60,QC,QCclarkii
+A.clarkii T0I9ctrl,61,Sample,T0ctrl
+A.clarkii T72hI9exp,62,Sample,T72hexp
+A.clarkii T72hI9ctrl,63,Sample,T72hctrl
+A.clarkii T0I10exp,64,Sample,T0exp
+A.clarkii T72hI6ctrl,65,Sample,T72hctrl
+A.clarkii T0I10ctrl,66,Sample,T0ctrl
+A.clarkii T72hI2exp,67,Sample,T72hexp
+QCclarkii8,68,QC,QCclarkii
+Qcclarkii fin6.25%,69,QC,QC6.25
+Qcclarkii fin12.5%,70,QC,QC12.5
+Qcclarkii fin25%,71,QC,QC25
+Qcclarkii fin50%,72,QC,QC50
+Qcclarkii fin100%,73,QC,QC100
