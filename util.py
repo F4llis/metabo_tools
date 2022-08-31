@@ -11,7 +11,6 @@ half_time_window = 30  # time range before and after RT in sec
 number_ticks = half_time_window * 2 * data_per_sec  # number of spectrum per data
 intensity_treshold = 8000  # everything under this will be annotated false
 
-
 def massage_data(X_i,y_i, mz_i, rt_i):
 
     dfi = pd.DataFrame(X_i)
@@ -120,16 +119,13 @@ def get_data_mz(data_mz ,mz , retention_time):
 
     ticks_processed = 0
 
-
-
     for i, scan in enumerate(run):
 
         if scan.ms_level == 1:
 
             t, measure = scan.scan_time  # get scan time
-            t = t * 60
 
-            if t >= (retention_time-half_time_window): # everything should be in sec
+            if t >= (retention_time-half_time_window):
 
                 ticks_processed +=1
 
@@ -138,10 +134,8 @@ def get_data_mz(data_mz ,mz , retention_time):
                     mz_scan = d[0]
                     i_scan = d[1]
 
-
                     if mz_scan >= mz - precision  and mz_scan <= mz + precision:
                         mz_in_range.append(i_scan)
-                        break
 
                 if not mz_in_range:
                     data.append(0)
