@@ -111,7 +111,7 @@ def get_data_mz_batch(data_mz ,features_list):
 
     return  [X_, y_, mz_, rt_ ]
 
-def get_data_mz(data_mz ,mz , retention_time):
+def get_data_mz(data_mz ,mz , retention_time , mz_rt_sec=True):
 
     run = pymzml.run.Reader(data_mz)
 
@@ -124,6 +124,9 @@ def get_data_mz(data_mz ,mz , retention_time):
         if scan.ms_level == 1:
 
             t, measure = scan.scan_time  # get scan time
+
+            if not mz_rt_sec:
+                t = t*60
 
             if t >= (retention_time-half_time_window):
 
@@ -147,7 +150,7 @@ def get_data_mz(data_mz ,mz , retention_time):
 
     return data
 
-def build_data_ml(path, data_mz_path, annotation=True):
+def build_data_ml(path, data_mz_path, annotation=True, mz_rt_sec=True):
 
     X_ = []
     y_ = []
@@ -162,7 +165,7 @@ def build_data_ml(path, data_mz_path, annotation=True):
         reader = csv.reader(f,delimiter=';')
         for line in list(reader):
 
-            spectrum = get_data_mz(data_mz_path, float(line[1]), float(line[2])*60)
+            spectrum = get_data_mz(data_mz_path, float(line[1]), float(line[2])*60, mz_rt_sec)
 
             X_.append(spectrum)
             if annotation:
