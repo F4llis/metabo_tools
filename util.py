@@ -3,6 +3,7 @@ import csv
 import pandas as pd
 import numpy as np
 from collections import defaultdict
+import scipy
 
 
 precision = 0.005  # m/z precision for raw data
@@ -10,33 +11,72 @@ data_per_sec = 2  # spectrum per second
 half_time_window = 30  # time range before and after RT in sec
 number_ticks = half_time_window * 2 * data_per_sec  # number of spectrum per data
 intensity_treshold = 8000  # everything under this will be annotated false
+number_sample = 120
+
+
+def filter_threshold(values):
+    if max(values) >= intensity_treshold:
+        return True
+    return False
 
 def massage_data(X_i,y_i, mz_i, rt_i):
 
     dfi = pd.DataFrame(X_i)
 
+    dfi = pd.DataFrame.rename(dfi, columns={0: 'x'})
+
     dfi['y'] = y_i
     dfi['mz'] = mz_i
     dfi['rt'] = rt_i
 
-    dfi['treshold_satisfied'] = dfi[0].apply(lambda x: 1 if np.amax(x) > intensity_treshold else 0)
-    dfi['y'] = dfi['y'] & dfi['treshold_satisfied']
+    dfi['treshold_satisfied'] = dfi['x'].apply(lambda x: 1 if np.amax(x) > intensity_treshold else 0)
     dfi['y'] = dfi['y'].apply(lambda x: 1 if x == True else 0)
 
-    dfi['norm'] = dfi[0].apply(lambda x: NormalizeData(x))
+    dfi['norm'] = dfi['x'].apply(lambda x: NormalizeData(x))
 
-    dfi['smooth'] = dfi[0].apply(lambda x: smooth(x))
+    dfi['smooth'] = dfi['norm'].apply(lambda x: smooth(x))
     dfi['smooth'] = dfi['smooth'].apply(lambda x: x[5:-5])
 
     dfi['grad1'] = dfi['smooth'].apply(lambda x: np.gradient(x))
     dfi['grad2'] = dfi['grad1'].apply(lambda x: np.gradient(x))
 
-    dfi['fft'] = dfi[0].apply(lambda x: np.fft.fft(x))
+    # Maxima & Minima
+    dfi['maxima'] = dfi['smooth'].apply(
+        lambda x: scipy.signal.find_peaks(x, width=None, wlen=None, rel_height=0.5, plateau_size=None)[0])
+    dfi['minima'] = dfi['smooth'].apply(lambda x: scipy.signal.find_peaks(-x, height=None, threshold=None, distance=None,
+                                                                        prominence=None, width=None, wlen=None,
+                                                                        rel_height=0.5, plateau_size=None)[0])
+
+    dfi['maxval'] = dfi[['smooth', 'maxima']].apply(lambda x: [x.smooth[i] for i in x.maxima], axis=1)
+    dfi['minval'] = dfi[['smooth', 'minima']].apply(lambda x: [x.smooth[i] for i in x.minima], axis=1)
+
+    dfi['maxvalnorm'] = dfi['maxval'].apply(lambda x: NormalizeData(x) if len(x) > 0 else [])
+    dfi['minvalnorm'] = dfi['minval'].apply(lambda x: NormalizeData(x) if len(x) > 0 else [])
+
+    # Stats
+    dfi['maxvalstats'] = dfi['maxvalnorm'].apply(lambda x: getStat(x))
+    dfi['minvalstats'] = dfi['minvalnorm'].apply(lambda x: getStat(x))
+
+    dfi['maximastats'] = dfi['maxima'].apply(lambda x: getStat(x))
+    dfi['minimastats'] = dfi['minima'].apply(lambda x: getStat(x))
+
+    dfi['stats'] = dfi['smooth'].apply(lambda x: getStat(x))
+
+    dfi['fft'] = dfi['x'].apply(lambda x: np.fft.fft(x))
     dfi['fftr'] = dfi['fft'].apply(lambda x: np.real(x))
     dfi['ffti'] = dfi['fft'].apply(lambda x: np.real(np.imag(x)))
 
     return dfi
 
+
+def getStat(data):
+    s = [0, 0, 0, 0, 0]  # nbrObs, mean, var,skew, kurtosis
+
+    if len(data) > 0:
+        de = scipy.stats.describe(data)
+        s = [de[0]/number_sample, de[2], de[3], de[4], de[5]]
+
+    return np.nan_to_num(np.array(s))
 def get_data_mz_batch(data_mz ,features_list):
 
     run = pymzml.run.Reader(data_mz,MS1_Precision=5e-3, MSn_Precision=5e-3,  MS_precisions = {
@@ -240,3 +280,25 @@ def ret_mats(df):
     y = df.y.map(lambda x : float(x))
 
     return x,xfft,y
+
+def ret_mats2(df):
+    xfft = np.hstack([np.vstack(df['fftr']), np.vstack(df['ffti']),
+                      np.vstack(df['maxvalstats']),
+                  np.vstack(df['minvalstats']),
+                  np.vstack(df['maximastats']),
+                  np.vstack(df['minimastats']),
+                  np.vstack(df['stats'])
+                  ])
+
+    xstat = np.hstack([np.vstack(df['maxvalstats']),
+                       np.vstack(df['minvalstats']),
+                  np.vstack(df['maximastats']),
+                  np.vstack(df['minimastats']),
+                  np.vstack(df['stats'])
+                  ])
+
+    x = np.stack([ np.vstack(df['norm']), np.vstack(df['smooth']) ,
+              np.vstack(df['grad1']) , np.vstack(df['grad2'])  ] , axis = 2)
+    y = df.y.map(lambda x : float(x))
+
+    return x,xfft,xstat, y
